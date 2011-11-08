@@ -8,6 +8,7 @@ class Record(object):
                  ttl=1800,
                  name=None,
                  priority=None,
+		 comment=None,
                  type=None,
                  updated=None,
                  created=None,
@@ -19,6 +20,7 @@ class Record(object):
         self.id = id
         self.ttl = ttl
         self.type = type
+	self.comment = comment
         self.updated = updated and \
             self.domain.conn.convert_iso_datetime(updated) or \
             None
@@ -30,6 +32,7 @@ class Record(object):
                name=None,
                ttl=None,
                priority=None,
+	       comment=None
                type=None
                ):
         build_it = lambda k, v, d: ' %s="%s"' % (k, v and v or d)
@@ -41,10 +44,13 @@ class Record(object):
             self.name = name
         elif priority:
             self.priority = priority
+	elif comment:
+	    self.comment = comment
         xml = '<record '
         xml += build_it('name', name, self.name)
         xml += build_it('ttl', ttl, self.ttl)
         xml += build_it('data', data, self.data)
+	xml += build_it('comment', comment, self.comment)
         if self.type.upper() in ['MX', 'SRV']:
             xml += build_it('priority', priority, self.priority)
 
